@@ -1,0 +1,46 @@
+NEXTCLOUD - DOCKER COMPOSE COMPLETO
+
+version: '3.8'
+
+services:
+  nextcloud:
+    image: nextcloud:latest
+    container_name: nextcloud
+    restart: unless-stopped
+    depends_on:
+      - mariadb
+      - redis
+    environment:
+      - MYSQL_HOST=mariadb
+      - MYSQL_DATABASE=nextcloud
+      - MYSQL_USER=nextcloud
+      - MYSQL_PASSWORD=nextcloud_password
+      - REDIS_HOST=redis
+    volumes:
+      - ./nextcloud_data:/var/www/html
+#      - ./php.ini:/usr/local/etc/php/
+
+  mariadb:
+    image: mariadb:11.4
+    container_name: mariadb
+    restart: unless-stopped
+    environment:
+      - MYSQL_ROOT_PASSWORD=root_password
+      - MYSQL_DATABASE=nextcloud
+      - MYSQL_USER=nextcloud
+      - MYSQL_PASSWORD=nextcloud_password
+    volumes:
+      - ./mariadb_data:/var/lib/mysql
+
+  redis:
+    image: redis:latest
+    container_name: redis
+    restart: unless-stopped
+    volumes:
+      - ./redis_data:/data
+
+volumes:
+  nextcloud_data:
+#  php.ini:
+  mariadb_data:
+  redis_data:
